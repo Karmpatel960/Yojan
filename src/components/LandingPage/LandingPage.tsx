@@ -2,6 +2,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Calendar, Wallet, Globe, Search } from "lucide-react"
+import Image from "next/image"
 
 
 export default function LandingPage() {
@@ -72,7 +73,7 @@ export default function LandingPage() {
               {/* Placeholder for event cards */}
               {[1, 2, 3].map((i) => (
                 <div key={i} className="border rounded-lg p-4">
-                  <img
+                  <Image
                     src={`/placeholder.svg?height=200&width=300`}
                     alt={`Event ${i}`}
                     className="w-full h-40 object-cover rounded-md mb-4"

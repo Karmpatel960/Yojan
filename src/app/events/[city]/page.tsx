@@ -35,7 +35,7 @@ const Events = () => {
     };
 
     fetchEvents();
-  }, []);
+  }, [city]);
 
   const handleViewDetails = (event: EventDetailsType) => {
     setSelectedEvent(event);

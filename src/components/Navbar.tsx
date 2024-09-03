@@ -16,7 +16,7 @@ import { CircleUser, Menu, Package2, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Image from 'next/image'
 import CitySelect from './CitySelect'
-import img from '../../public/pic.png'
+import em from '../../public/pic.png'
 
 //https://see.fontimg.com/api/rf5/p7GaR/YjJlMWIwZTY4OGUzNDkwOGFhYTE0Nzk0MDkzYTM1YWMub3Rm/WW9qYW4/angel-demo-regular.png?r=fs&h=98&w=1500&fg=000000&bg=FFFFFF&s=65
 
@@ -29,7 +29,7 @@ export default function Navbar(){
                 href="#"
                 className="flex items-center gap-8 text-lg font-semibold md:text-base full "
             >
-                <Image src={img} alt="yojan" width={150}
+                <Image src={em} alt="yojan" width={150}
 height={100}/>
                 <span className="sr-only">Yojan</span>
             </Link>
@@ -59,7 +59,7 @@ height={100}/>
                 href="#"
                 className="flex items-center gap-2 text-lg font-semibold"
               >
-                <img src='https://see.fontimg.com/api/rf5/p7GaR/YjJlMWIwZTY4OGUzNDkwOGFhYTE0Nzk0MDkzYTM1YWMub3Rm/WW9qYW4/angel-demo-regular.png?r=fs&h=98&w=1500&fg=000000&bg=FFFFFF&s=65'></img>
+                <Image src='https://see.fontimg.com/api/rf5/p7GaR/YjJlMWIwZTY4OGUzNDkwOGFhYTE0Nzk0MDkzYTM1YWMub3Rm/WW9qYW4/angel-demo-regular.png?r=fs&h=98&w=1500&fg=000000&bg=FFFFFF&s=65' alt="Description"/>
                 <span className="sr-only">Yojan</span>
               </Link>
               <Link
@@ -78,7 +78,7 @@ height={100}/>
                 href="#"
                 className="text-muted-foreground hover:text-foreground"
               >
-                Today's Events
+                Today Events
               </Link>
             </nav>
           </SheetContent>

@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
+import Image from "next/image";
 
 interface EventFormState {
   title: string;
@@ -84,7 +85,7 @@ const MediaTab: React.FC<MediaTabProps> = ({ formState, updateField, handleFileU
             <div className="flex flex-wrap gap-4 p-4">
               {formState.images.map((image, index) => (
                 <div key={index} className="relative">
-                  <img src={image} alt={`Preview ${index + 1}`} className="h-24 w-24 object-cover rounded-md" />
+                  <Image src={image} alt={`Preview ${index + 1}`} className="h-24 w-24 object-cover rounded-md" />
                   <Button
                     variant="destructive"
                     size="icon"

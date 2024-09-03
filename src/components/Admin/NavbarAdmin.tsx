@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { CircleUser, Menu, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import img from "../../../public/pic.png";
+import em from "../../../public/pic.png";
 import { useAuth } from "@/hooks/useAuth";
 
 export default function NavbarAdmin() {
@@ -44,7 +44,7 @@ export default function NavbarAdmin() {
     <header className="sticky top-2 flex h-20 items-center gap-4 border-b bg-background px-4 md:px-6">
       <nav className="hidden md:flex flex-col md:flex-row items-center gap-6 text-lg font-medium md:text-sm lg:gap-6">
         <Link href="#" className="flex items-center gap-8 text-lg font-semibold md:text-base full">
-          <Image src={img} alt="yojan" width={150} height={100} />
+          <Image src={em} alt="yojan" width={150} height={100} />
           <span className="sr-only">Yojan</span>
         </Link>
         <Link href="/events" className="text-muted-foreground transition-colors hover:text-foreground">
@@ -65,7 +65,7 @@ export default function NavbarAdmin() {
         <SheetContent side="left">
           <nav className="grid gap-6 text-lg font-medium">
             <Link href="#" className="flex items-center gap-2 text-lg font-semibold">
-              <img src="https://see.fontimg.com/api/rf5/p7GaR/YjJlMWIwZTY4OGUzNDkwOGFhYTE0Nzk0MDkzYTM1YWMub3Rm/WW9qYW4/angel-demo-regular.png?r=fs&h=98&w=1500&fg=000000&bg=FFFFFF&s=65"></img>
+              <Image src="https://see.fontimg.com/api/rf5/p7GaR/YjJlMWIwZTY4OGUzNDkwOGFhYTE0Nzk0MDkzYTM1YWMub3Rm/WW9qYW4/angel-demo-regular.png?r=fs&h=98&w=1500&fg=000000&bg=FFFFFF&s=65" alt="Description"/>
               <span className="sr-only">Yojan</span>
             </Link>
             <Link href="#" className="text-muted-foreground hover:text-foreground">
