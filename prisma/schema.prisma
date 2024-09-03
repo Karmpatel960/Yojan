@@ -1,0 +1,149 @@
+datasource db {
+  provider = "postgresql" // Change this to your database provider
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id         Int       @id @default(autoincrement())
+  email      String    @unique
+  name       String?
+  password   String
+  role       Role      @default(USER)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  wallet     Wallet?
+  sessions   Session[]  // One-to-many relationship with Session
+  events     Event[]    // One-to-many relationship with Event
+}
+
+model Session {
+  id           Int       @id @default(autoincrement())
+  sessionToken String    @unique
+  refreshToken String    @unique
+  userId       Int
+  user         User      @relation(fields: [userId], references: [id])
+  createdAt    DateTime  @default(now())
+  expiresAt    DateTime
+  refreshExpiresAt DateTime
+
+  @@index([sessionToken], map: "session_token_idx")
+  @@index([refreshToken], map: "refresh_token_idx")
+}
+
+model City {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  events      Event[]  // One-to-many relationship with Event
+}
+
+model Event {
+  id               Int        @id @default(autoincrement())
+  title            String
+  description      String
+  date             DateTime
+  venue            String
+  category         String
+  tags             String[]
+  organizerName    String
+  organizerContact String
+  organizerEmail   String
+  images           Image[]  
+  videos           Video[] 
+  poster           String?
+  gallery          Media[] 
+  ticketPrice      Float
+  availableSeats   Int
+  registrationLink String
+  paymentOptions   String[]
+  metaTitle        String?
+  metaDescription  String?
+  metaKeywords     String[]
+  likes            Int        @default(0)
+  shares           Int        @default(0)
+  comments         Comment[]  @relation("EventComments")
+  instructions     String?
+  schedule         String?
+  sponsorDetails   String?
+  isFeatured       Boolean    @default(false)
+  isPublic         Boolean    @default(true)
+  isCancelled      Boolean    @default(false)
+  viewCount        Int        @default(0)
+  clicks           Int        @default(0)
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  createdById      Int        // Foreign key linking to the User model
+  createdBy        User       @relation(fields: [createdById], references: [id]) // Relation to User
+  cityId           Int        // Foreign key linking to the City model
+  city             City       @relation(fields: [cityId], references: [id]) // Relation to City
+  paymentAddress   String?
+  transactions     Transaction[]
+}
+
+model Image {
+  id      Int    @id @default(autoincrement())
+  url     String
+  eventId Int
+  event   Event  @relation(fields: [eventId], references: [id])
+}
+
+model Video {
+  id      Int    @id @default(autoincrement())
+  url     String
+  eventId Int
+  event   Event  @relation(fields: [eventId], references: [id])
+}
+
+model Media {
+  id      Int    @id @default(autoincrement())
+  url     String
+  type    MediaType
+  eventId Int
+  event   Event  @relation(fields: [eventId], references: [id])
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+}
+
+
+model Wallet {
+  id            Int       @id @default(autoincrement())
+  address       String    @unique
+  balance       Float     @default(0)
+  userId        Int       @unique
+  user          User      @relation(fields: [userId], references: [id])
+  transactions  Transaction[]
+}
+
+model Transaction {
+  id          Int       @id @default(autoincrement())
+  amount      Float
+  description String
+  date        DateTime  @default(now())
+  walletId    Int
+  wallet      Wallet    @relation(fields: [walletId], references: [id])
+  eventId     Int?
+  event       Event?    @relation(fields: [eventId], references: [id])
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  eventId   Int
+  event     Event    @relation(fields: [eventId], references: [id], name: "EventComments")
+  createdAt DateTime @default(now())
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+
