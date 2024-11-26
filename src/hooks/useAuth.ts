@@ -28,9 +28,9 @@ export function useAuth() {
 
       // Set authenticated state and redirect
       setIsAuthenticated(true);
-      router.push("/dashboard");
+      
 
-      return { success: true, message: "Login successful." };
+      return { success: true, message: "Login successful.", userId: data.userId, role: data.role };
     } catch (error) {
       setError("An error occurred during login.");
       console.error("Login error:", error);
@@ -60,6 +60,39 @@ export function useAuth() {
       return { success: false, error: "An error occurred during signup." };
     }
   };
+
+  const googleLogin = async (googleToken: string) => {
+    try {
+      const response = await fetch("/api/auth/google", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: googleToken }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || "An error occurred during Google login.");
+        return { success: false, error: data.error || "An error occurred during Google login." };
+      }
+
+
+      localStorage.setItem("accessToken", data.accessToken);
+      localStorage.setItem("userId", data.userId);
+
+
+
+      setIsAuthenticated(true);
+
+      return { success: true, message: "Google login successful.", userId: data.userId, role: data.role };
+    } catch (error) {
+      setError("An error occurred during Google login.");
+      console.error("Google login error:", error);
+      return { success: false, error: "An error occurred during Google login." };
+    }
+  };
+
+
 
   const verifyToken = async () => {
     const token = localStorage.getItem("accessToken");
@@ -125,5 +158,5 @@ export function useAuth() {
 
 
 
-  return { login, signup, verifyToken, isAuthenticated, error, logout };
+  return { login, signup, verifyToken, isAuthenticated,googleLogin, error, logout };
 }

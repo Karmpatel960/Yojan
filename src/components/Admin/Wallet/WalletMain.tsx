@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -9,186 +9,29 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Wallet, Plus, Link, User, CloudRain } from "lucide-react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { useWallet } from "@/hooks/useWallet";
 
 export default function WalletMain() {
-  const [balance, setBalance] = useState(0)
-  const [transactions, setTransactions] = useState([])
-  const [amount, setAmount] = useState('')
-  const [operation, setOperation] = useState('')
-  const [toAddress, setToAddress] = useState('')
-  const [isWalletConnected, setIsWalletConnected] = useState(false)
-  const [userDetails, setUserDetails] = useState(null)
-  const [privateKey, setPrivateKey] = useState('')
-  const [hasWallet, setHasWallet] = useState(false)
-
-  useEffect(() => {
-    checkWalletStatus()
-  }, [])
-
-  const checkWalletStatus = async () => {
-    try {
-      const response = await fetch('/api/wallet', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'getWalletDetails', userId: 1 }) // Assuming userId 1
-      })
-      if (response.ok) {
-        setHasWallet(true)
-      }
-    } catch (error) {
-      console.error('Error checking wallet status:', error)
-    }
-  }
-
-  const handleOpenWallet = async () => {
-    try {
-      const response = await fetch('/api/wallet', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'getWalletDetails', userId: 1 }) // Assuming userId 1
-      })
-      const data = await response.json()
-      if (response.ok) {
-        setIsWalletConnected(true)
-        setUserDetails(data)
-        setBalance(data.balance)
-        fetchTransactions()
-      } else {
-        alert('Failed to open wallet. Please try again.')
-      }
-    } catch (error) {
-      console.error('Error opening wallet:', error)
-      alert('Failed to open wallet. Please try again.')
-    }
-  }
-
-  const handleCreateWallet = async () => {
-    try {
-      const response = await fetch('/api/wallet', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'create', userId: 1 }) // Assuming userId 1
-      })
-      const data = await response.json()
-      if (response.ok) {
-        setIsWalletConnected(true)
-        setUserDetails(data)
-        setBalance(data.balance)
-        setHasWallet(true)
-        alert('New wallet created successfully!')
-        fetchTransactions()
-      } else {
-        alert(`Failed to create wallet: ${data.error}`)
-      }
-    } catch (error) {
-      console.error('Error creating wallet:', error)
-      alert('Failed to create wallet. Please try again.')
-    }
-  }
-
-  const handleImportWallet = async () => {
-    if (!privateKey) {
-      alert('Please enter a private key to import.')
-      return
-    }
-    try {
-      const response = await fetch('/api/wallet', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'import',
-          userId: 1, // Assuming userId 1
-          encryptedPrivateKey: JSON.stringify(Array.from(new TextEncoder().encode(privateKey)))
-        })
-      })
-      const data = await response.json()
-      if (response.ok) {
-        setIsWalletConnected(true)
-        setUserDetails(data)
-        setBalance(data.balance)
-        setHasWallet(true)
-        alert('Wallet imported successfully!')
-        fetchTransactions()
-      } else {
-        alert(`Failed to import wallet: ${data.error}`)
-      }
-    } catch (error) {
-      console.error('Error importing wallet:', error)
-      alert('Failed to import wallet. Please try again.')
-    }
-  }
-
-  const handleRequestAirdrop = async () => {
-    try {
-      const response = await fetch('/api/wallet', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'requestAirdrop', userId: 1 }) // Assuming userId 1
-      })
-      const data = await response.json()
-      if (response.ok) {
-        alert(`Airdrop successful! Received 2 SOL.`)
-        setBalance(data.newBalance)
-        fetchTransactions()
-      } else {
-        alert(`Airdrop failed: ${data.error}`)
-      }
-    } catch (error) {
-      console.error('Error requesting airdrop:', error)
-      alert('Failed to request airdrop. Please try again.')
-    }
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!amount || !operation) return
-
-    try {
-      const response = await fetch('/api/wallet', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'send',
-          userId: 1, // Assuming userId 1
-          amount: parseFloat(amount),
-          toAddress: operation === 'send' ? toAddress : null
-        })
-      })
-      const data = await response.json()
-      if (response.ok) {
-        alert(`Transaction submitted: ${operation} ${amount} SOL`)
-        setBalance(data.wallet.balance)
-        fetchTransactions()
-      } else {
-        alert(`Transaction failed: ${data.error}`)
-      }
-    } catch (error) {
-      console.error('Error submitting transaction:', error)
-      alert('Failed to submit transaction. Please try again.')
-    }
-  }
-
-  const fetchTransactions = async () => {
-    try {
-      const response = await fetch('/api/wallet', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'getTransactions', userId: 1 }) // Assuming userId 1
-      })
-      const data = await response.json()
-      if (response.ok) {
-        setTransactions(data.transactions)
-      } else {
-        console.error('Failed to fetch transactions:', data.error)
-      }
-    } catch (error) {
-      console.error('Error fetching transactions:', error)
-    }
-  }
+  const [amount, setAmount] = useState<string>('');
+  const [operation, setOperation] = useState<string>('');
+  const [toAddress, setToAddress] = useState<string>('');
+  const [privateKey, setPrivateKey] = useState<string>('');
+  const { 
+    balance, 
+    transactions, 
+    isWalletConnected, 
+    hasWallet, 
+    userDetails,
+    handleOpenWallet, 
+    handleCreateWallet, 
+    handleImportWallet, 
+    handleSubmitTransaction, 
+    handleRequestAirdrop 
+  } = useWallet();
 
   return (
     <div>
-      <TabsContent value="wallet" className="space-y-4">
+       <TabsContent value="wallet" className="space-y-4">
         <Card>
           <CardHeader>
             <CardTitle>Solana Wallet (Devnet)</CardTitle>
@@ -217,14 +60,15 @@ export default function WalletMain() {
                           <DialogTitle>Account Details</DialogTitle>
                         </DialogHeader>
                         <div className="space-y-2">
-                          <p><strong>Address:</strong> {userDetails?.address}</p>
-                          <p><strong>Balance:</strong> {userDetails?.balance} SOL</p>
+                          <p><strong>Address:</strong> {userDetails?.address || 'null'}</p>
+                          <p><strong>Balance:</strong> {userDetails?.balance || 'null'} SOL</p>
+                          <p><strong>Private Key:</strong> {userDetails?.privateKey || 'null'}</p>
                         </div>
                       </DialogContent>
                     </Dialog>
                   </div>
                 </div>
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmitTransaction} className="space-y-4">
                   <div>
                     <Label htmlFor="amount">Amount (SOL)</Label>
                     <div className="flex space-x-2">
@@ -326,7 +170,7 @@ export default function WalletMain() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {transactions.map((tx: any) => (
+                    {transactions.map((tx: Transaction) => (
                       <TableRow key={tx.id}>
                         <TableCell>{tx.description}</TableCell>
                         <TableCell>{tx.amount} SOL</TableCell>

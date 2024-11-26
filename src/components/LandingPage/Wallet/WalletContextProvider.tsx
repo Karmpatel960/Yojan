@@ -4,6 +4,8 @@ import React, { FC, ReactNode } from 'react';
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { PhantomWalletAdapter } from '@solana/wallet-adapter-wallets';
 import { BackpackWalletAdapter } from '@solana/wallet-adapter-backpack'
+import { useMemo } from "react";
+import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import { clusterApiUrl } from '@solana/web3.js';
 
@@ -14,14 +16,11 @@ interface WalletContextProviderProps {
 }
 
 const WalletContextProvider: FC<WalletContextProviderProps> = ({ children }) => {
-  const network = process.env.NEXT_PUBLIC_SOLANA_NETWORK || 'devnet';
-  const endpoint = process.env.NEXT_PUBLIC_SOLANA_RPC_URL || clusterApiUrl(network);
 
-  const wallets = [
-    new PhantomWalletAdapter(),
-    new BackpackWalletAdapter(),
-    // Add other wallets here
-  ];
+const network = WalletAdapterNetwork.Devnet;
+  const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+  const wallets = useMemo(() => [new PhantomWalletAdapter(),new BackpackWalletAdapter()], [network]);
+
 
   return (
     <ConnectionProvider endpoint={endpoint}>
@@ -33,3 +32,4 @@ const WalletContextProvider: FC<WalletContextProviderProps> = ({ children }) => 
 };
 
 export default WalletContextProvider;
+

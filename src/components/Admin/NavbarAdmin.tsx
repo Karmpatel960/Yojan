@@ -16,10 +16,12 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import em from "../../../public/pic.png";
 import { useAuth } from "@/hooks/useAuth";
+import CommandDemo from "@/components/LandingPage/Search"
 
 export default function NavbarAdmin() {
   const { isAuthenticated, logout, verifyToken } = useAuth();
   const [authStatus, setAuthStatus] = useState(false);
+  const [isCommandVisible, setIsCommandVisible] = useState(false);
 
   useEffect(() => {
     const checkAuthStatus = async () => {
@@ -41,6 +43,7 @@ export default function NavbarAdmin() {
   };
 
   return (
+    <div>
     <header className="sticky top-2 flex h-20 items-center gap-4 border-b bg-background px-4 md:px-6">
       <nav className="hidden md:flex flex-col md:flex-row items-center gap-6 text-lg font-medium md:text-sm lg:gap-6">
         <Link href="#" className="flex items-center gap-8 text-lg font-semibold md:text-base full">
@@ -92,6 +95,7 @@ export default function NavbarAdmin() {
               type="search"
               placeholder="Search Events..."
               className="pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px]"
+              onFocus={() => setIsCommandVisible(true)} 
             />
           </div>
         </form>
@@ -125,5 +129,12 @@ export default function NavbarAdmin() {
         )}
       </div>
     </header>
+
+    {isCommandVisible && (
+        <div className="flex items-center justify-center bg-black/50">
+            <CommandDemo onClose={() => setIsCommandVisible(false)}/>
+        </div>
+      )}
+    </div>
   );
 }

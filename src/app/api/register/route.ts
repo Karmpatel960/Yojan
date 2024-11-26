@@ -13,10 +13,10 @@ export async function GET() {
         gallery: true,
       },
     });
-    console.log('Fetched events:', events); // Debugging output
+    console.log('Fetched events:', events); 
     return NextResponse.json(events);
   } catch (error) {
-    console.error('Error fetching events:', error); // Log the error
+    console.error('Error fetching events:', error); 
     return NextResponse.json({ error: 'Failed to fetch events' }, { status: 500 });
   }
 }

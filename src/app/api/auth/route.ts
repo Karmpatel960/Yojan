@@ -78,7 +78,7 @@ export async function POST(request: NextRequest,response: NextResponse) {
       });
 
       // Set HTTP-only cookie
-      const response = NextResponse.json({ message: "Login successful.", accessToken, userId: user.id });
+      const response = NextResponse.json({ message: "Login successful.", accessToken, userId: user.id, role: user.role });
 
       response.headers.set(
         "Set-Cookie",

@@ -29,10 +29,6 @@ export default function CitySelect() {
   const defaultCity = "";
   const [selectedCity, setSelectedCity] = React.useState<string>(defaultCity);
 
-  React.useEffect(() => {
-    router.push(`/`);
-  }, [router]);
-
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 

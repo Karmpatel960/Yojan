@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -29,9 +30,11 @@ export default function Signup() {
   const [signupPassword, setSignupPassword] = useState("");
   const [role, setRole] = useState<"USER" | "ADMIN">("ADMIN");
   const { login, signup, error } = useAuth();
+  const router = useRouter();
 
   const handleLogin = async () => {
     await login(loginEmail, loginPassword);
+    router.push("/dashboard");
   };
 
   const handleSignup = async () => {
@@ -40,7 +43,7 @@ export default function Signup() {
   };
 
   return (
-    <Tabs defaultValue="login" value={currentTab} onValueChange={setCurrentTab} className="w-[400px]">
+    <Tabs defaultValue="login" value={currentTab} onValueChange={setCurrentTab} className="w-[385px]">
       <TabsList className="grid w-full grid-cols-2">
         <TabsTrigger value="login">Login</TabsTrigger>
         <TabsTrigger value="signup">Sign Up</TabsTrigger>

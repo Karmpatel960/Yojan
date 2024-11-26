@@ -8,26 +8,28 @@ generator client {
 }
 
 model User {
-  id         Int       @id @default(autoincrement())
-  email      String    @unique
-  name       String?
-  password   String
-  role       Role      @default(USER)
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-  wallet     Wallet?
-  sessions   Session[]  // One-to-many relationship with Session
-  events     Event[]    // One-to-many relationship with Event
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  name      String?
+  password  String
+  role      Role      @default(USER)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  googleId  String?   @unique
+  picture   String?
+  wallet    Wallet[]
+  sessions  Session[] // One-to-many relationship with Session
+  events    Event[] // One-to-many relationship with Event
 }
 
 model Session {
-  id           Int       @id @default(autoincrement())
-  sessionToken String    @unique
-  refreshToken String    @unique
-  userId       Int
-  user         User      @relation(fields: [userId], references: [id])
-  createdAt    DateTime  @default(now())
-  expiresAt    DateTime
+  id               Int      @id @default(autoincrement())
+  sessionToken     String   @unique
+  refreshToken     String   @unique
+  userId           Int
+  user             User     @relation(fields: [userId], references: [id])
+  createdAt        DateTime @default(now())
+  expiresAt        DateTime
   refreshExpiresAt DateTime
 
   @@index([sessionToken], map: "session_token_idx")
@@ -35,15 +37,15 @@ model Session {
 }
 
 model City {
-  id          Int      @id @default(autoincrement())
-  name        String   @unique
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  events      Event[]  // One-to-many relationship with Event
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  events    Event[] // One-to-many relationship with Event
 }
 
 model Event {
-  id               Int        @id @default(autoincrement())
+  id               Int           @id @default(autoincrement())
   title            String
   description      String
   date             DateTime
@@ -53,10 +55,10 @@ model Event {
   organizerName    String
   organizerContact String
   organizerEmail   String
-  images           Image[]  
-  videos           Video[] 
+  images           Image[]
+  videos           Video[]
   poster           String?
-  gallery          Media[] 
+  gallery          Media[]
   ticketPrice      Float
   availableSeats   Int
   registrationLink String
@@ -64,25 +66,38 @@ model Event {
   metaTitle        String?
   metaDescription  String?
   metaKeywords     String[]
-  likes            Int        @default(0)
-  shares           Int        @default(0)
-  comments         Comment[]  @relation("EventComments")
+  likes            Int           @default(0)
+  shares           Int           @default(0)
+  comments         Comment[]     @relation("EventComments")
   instructions     String?
   schedule         String?
   sponsorDetails   String?
-  isFeatured       Boolean    @default(false)
-  isPublic         Boolean    @default(true)
-  isCancelled      Boolean    @default(false)
-  viewCount        Int        @default(0)
-  clicks           Int        @default(0)
-  createdAt        DateTime   @default(now())
-  updatedAt        DateTime   @updatedAt
-  createdById      Int        // Foreign key linking to the User model
-  createdBy        User       @relation(fields: [createdById], references: [id]) // Relation to User
-  cityId           Int        // Foreign key linking to the City model
-  city             City       @relation(fields: [cityId], references: [id]) // Relation to City
+  isFeatured       Boolean       @default(false)
+  isPublic         Boolean       @default(true)
+  isCancelled      Boolean       @default(false)
+  viewCount        Int           @default(0)
+  clicks           Int           @default(0)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  createdById      Int // Foreign key linking to the User model
+  createdBy        User          @relation(fields: [createdById], references: [id]) // Relation to User
+  cityId           Int // Foreign key linking to the City model
+  city             City          @relation(fields: [cityId], references: [id]) // Relation to City
   paymentAddress   String?
+  nftTickets       NFTTicket[]
   transactions     Transaction[]
+  NFTListing       NFTListing[]
+}
+
+model NFTTicket {
+  id             Int      @id @default(autoincrement())
+  mintAddress    String   @unique
+  eventId        Int
+  event          Event    @relation(fields: [eventId], references: [id])
+  ownerPublicKey String
+  ownerEmail     String
+  metadata       String // JSON string of metadata
+  createdAt      DateTime @default(now())
 }
 
 model Image {
@@ -100,11 +115,11 @@ model Video {
 }
 
 model Media {
-  id      Int    @id @default(autoincrement())
+  id      Int       @id @default(autoincrement())
   url     String
   type    MediaType
   eventId Int
-  event   Event  @relation(fields: [eventId], references: [id])
+  event   Event     @relation(fields: [eventId], references: [id])
 }
 
 enum MediaType {
@@ -112,25 +127,28 @@ enum MediaType {
   VIDEO
 }
 
-
 model Wallet {
-  id            Int       @id @default(autoincrement())
-  address       String    @unique
-  balance       Float     @default(0)
-  userId        Int       @unique
-  user          User      @relation(fields: [userId], references: [id])
-  transactions  Transaction[]
+  id           Int           @id @default(autoincrement())
+  address      String        @unique
+  balance      Float         @default(0)
+  userId       Int           @unique
+  user         User          @relation(fields: [userId], references: [id])
+  transactions Transaction[]
+  privateKey   String
 }
 
 model Transaction {
-  id          Int       @id @default(autoincrement())
-  amount      Float
-  description String
-  date        DateTime  @default(now())
-  walletId    Int
-  wallet      Wallet    @relation(fields: [walletId], references: [id])
-  eventId     Int?
-  event       Event?    @relation(fields: [eventId], references: [id])
+  id                   Int      @id @default(autoincrement())
+  amount               Float
+  description          String
+  date                 DateTime @default(now())
+  walletId             Int
+  wallet               Wallet   @relation(fields: [walletId], references: [id])
+  eventId              Int?
+  event                Event?   @relation(fields: [eventId], references: [id])
+  buyerPublicKey       String
+  status               String
+  transactionSignature String?
 }
 
 model Comment {
@@ -146,4 +164,106 @@ enum Role {
   ADMIN
 }
 
+model NFTMarketplace {
+  id          Int          @id @default(autoincrement())
+  name        String
+  description String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  listings    NFTListing[]
+  marketFees  Decimal      @default(2.5) // Marketplace fee percentage
+  totalVolume Decimal      @default(0)
+  isActive    Boolean      @default(true)
+}
 
+model NFTListing {
+  id                Int              @id @default(autoincrement())
+  eventId           Int // Reference to original Event table
+  event             Event            @relation(fields: [eventId], references: [id])
+  marketplaceId     Int
+  marketplace       NFTMarketplace   @relation(fields: [marketplaceId], references: [id])
+  price             Decimal
+  status            ListingStatus    @default(ACTIVE)
+  sellerAddress     String
+  buyerAddress      String?
+  mintAddress       String           @unique
+  metadata          Json // Stores NFT metadata
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  expiresAt         DateTime?
+  saleHistory       NFTSaleHistory[]
+  royaltyPercentage Decimal          @default(5.0)
+}
+
+model NFTSaleHistory {
+  id              Int        @id @default(autoincrement())
+  listingId       Int
+  listing         NFTListing @relation(fields: [listingId], references: [id])
+  sellerAddress   String
+  buyerAddress    String
+  price           Decimal
+  transactionHash String     @unique
+  saleDate        DateTime   @default(now())
+  marketplaceFee  Decimal
+  royaltyFee      Decimal
+}
+
+model NFTCollection {
+  id             Int      @id @default(autoincrement())
+  name           String
+  symbol         String
+  description    String?
+  creatorAddress String
+  verified       Boolean  @default(false)
+  totalSupply    Int      @default(0)
+  floorPrice     Decimal?
+  volumeTraded   Decimal  @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model NFTOffer {
+  id           Int         @id @default(autoincrement())
+  listingId    Int
+  buyerAddress String
+  offerPrice   Decimal
+  status       OfferStatus @default(PENDING)
+  expiresAt    DateTime
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+}
+
+model NFTActivity {
+  id              Int          @id @default(autoincrement())
+  listingId       Int
+  activityType    ActivityType
+  fromAddress     String
+  toAddress       String?
+  price           Decimal?
+  timestamp       DateTime     @default(now())
+  transactionHash String?
+}
+
+enum ListingStatus {
+  ACTIVE
+  SOLD
+  CANCELLED
+  EXPIRED
+}
+
+enum OfferStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  EXPIRED
+}
+
+enum ActivityType {
+  LISTED
+  SALE
+  OFFER_MADE
+  OFFER_ACCEPTED
+  PRICE_UPDATE
+  CANCELLED
+  TRANSFER
+}

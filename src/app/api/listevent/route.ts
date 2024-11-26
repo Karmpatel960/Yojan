@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
+import { createWallet } from '@/utils/createwallet';
 
 const prisma = new PrismaClient();
 
@@ -31,7 +32,18 @@ export async function POST(req: NextRequest) {
       cityId,
     } = data;
 
-    const createdByIdInt = parseInt(createdById, 10);
+    let user = parseInt(createdById,10);
+
+    let wallet = await prisma.wallet.findUnique({ where: { userId: user } });
+    if (!wallet) {
+      const newWalletAddress = await createWallet(user);
+      // wallet = await prisma.wallet.create({
+      //   data: {
+      //     address: newWalletAddress,
+      //     userId: user,
+      //   },
+      // });
+    }
 
     const event = await prisma.event.create({
       data: {
@@ -50,7 +62,7 @@ export async function POST(req: NextRequest) {
         isFeatured,
         isPublic,
         instructions,
-        createdById: createdByIdInt,
+        createdById: user,
         cityId: parseInt(cityId, 10),
         images: {
           create: images.map((url: string) => ({ url })),
@@ -64,6 +76,7 @@ export async function POST(req: NextRequest) {
             ...videos.map((url: string) => ({ url, type: 'VIDEO' })),
           ],
         },
+        paymentAddress: wallet.address,
       },
       include: {
         images: true,

@@ -84,14 +84,14 @@ const TicketsTab : React.FC<TabProps>= ({ formState, updateField }) => {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="registrationLink">Solana Public Address</Label>
+        <Label htmlFor="registrationLink">Extenal WebSite Link</Label>
         <div className="relative">
           <Input
             id="registrationLink"
             type="url"
             value={formState.registrationLink}
             onChange={(e) => updateField("registrationLink", e.target.value)}
-            placeholder="1234356hgfsdsfkjhgq23454dw34t554t"
+            placeholder="https://example.com"
           />
           <Link2 className="absolute right-3 top-2.5 h-5 w-5 text-muted-foreground" />
         </div>

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import ClientSideNavbar from "@/components/ClientSideNavbar";
+import { SolanaWalletProvider } from '@/components/SolanaWalletProvider';
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -17,8 +18,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <ClientSideNavbar />
-        {children}
+        <SolanaWalletProvider>
+          <ClientSideNavbar />
+          {children}
+        </SolanaWalletProvider>
       </body>
     </html>
   );

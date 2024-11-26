@@ -1,40 +1,25 @@
+"use client";
+import { useState } from 'react';
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Calendar, Wallet, Globe, Search } from "lucide-react"
-import Image from "next/image"
+import { Calendar, Wallet, Globe,Search } from "lucide-react"
+import CommandDemo from "@/components/LandingPage/Search";
+import MainBox from "./MainBox"
+import EventPage from "@/components/LandingPage/EventBox"
 
 
 export default function LandingPage() {
+  const [isCommandVisible, setIsCommandVisible] = useState(false);
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen  relative z-20">
       <main className="flex-1">
-        <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48">
-          <div className="container px-4 md:px-6">
-            <div className="flex flex-col items-center space-y-4 text-center">
-              <div className="space-y-2">
-                <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none">
-                  Plan Your Event, Pay with Solana
-                </h1>
-                <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl">
-                  Seamlessly organize and attend events with blockchain-powered ticketing and payments.
-                </p>
-              </div>
-              <div className="space-x-4">
-                <Button asChild>
-                  <Link href="/signin">Login</Link>
-                </Button>
-                <Button asChild variant="outline">
-                  <Link href="/signup">Sign Up</Link>
-                </Button>
-              </div>
-            </div>
-          </div>
-        </section>
+        <MainBox/>
+        
         <section id="features" className="w-full py-12 md:py-24 lg:py-32 bg-gray-100">
           <div className="container px-4 md:px-6">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-center mb-8">
-              Why Choose EventChain?
+              Why Choose Yojan?
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="flex flex-col items-center text-center">
@@ -62,27 +47,21 @@ export default function LandingPage() {
             </h2>
             <div className="flex justify-center mb-8">
               <div className="flex w-full max-w-sm items-center space-x-2">
-                <Input type="text" placeholder="Search events" />
-                <Button type="submit">
-                  <Search className="h-4 w-4 mr-2" />
-                  Search
-                </Button>
+              <form className="flex relative flex-1space-x-2 ">
+                  <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    type="search"
+                    placeholder="Search Events..."
+                    className="pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px]"
+                    onFocus={() => setIsCommandVisible(true)}
+                    onBlur={() => setIsCommandVisible(false)}
+                  />
+                  <Button>Search</Button>
+              </form>
               </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {/* Placeholder for event cards */}
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="border rounded-lg p-4">
-                  <Image
-                    src={`/placeholder.svg?height=200&width=300`}
-                    alt={`Event ${i}`}
-                    className="w-full h-40 object-cover rounded-md mb-4"
-                  />
-                  <h3 className="text-xl font-bold mb-2">Event Title {i}</h3>
-                  <p className="text-gray-500 mb-4">Date • Time • Location</p>
-                  <Button className="w-full">Book Now</Button>
-                </div>
-              ))}
+            <div>
+              <EventPage/>
             </div>
           </div>
         </section>
@@ -120,6 +99,14 @@ export default function LandingPage() {
           </Link>
         </nav>
       </footer>
+
+      {isCommandVisible && (
+  <div className="absolute w-full bg-black/50">
+    <CommandDemo onClose={() => setIsCommandVisible(false)} />
+  </div>
+)}
     </div>
+
+
   )
 }
